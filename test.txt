@@ -1,1 +1,110 @@
-test
+test--Liunx cmd
+ cd ~ --to home
+ cd - --to last folder
+
+--Python cmd
+import pyqt5
+ help(pyqt5)
+ 
+-- install python dev environment
+  $ sudo add-apt-repository ppa:mystic-mirage/pycharm  --add resource
+  $ sudo apt update  --update
+  $ sudo apt install pycharm-community --community version
+$ sudo apt remove pycharm pycharm-community && sudo apt autoremove --unistall
+
+ -- config git tools
+$ sudo apt-get install git
+$ git config --global user.name "KevinLoudi"
+$ git config --global user.email "zhugengyuloudi@gmail.com"
+$ sudo apt-get install openssh-server
+$ ssh-keygen -t rsa
+$ cat ~/.ssh/id_rsa.pub  --copy to Github page
+
+$ git clone git@github.com:KevinLoudi/Python3.git  --SSH
+$ cd project
+$ echo 'test' > test.txt  --write file
+$ git add test.txt  --add file to buffer
+$ git commit -m "first commit"
+$ git push origin master  --commit
+
+--sogu pinyin 
+sudo add-apt-repository ppa:fcitx-team/nightly
+sudo apt-get update
+sudo apt-get install fcitx --
+sudo apt-get install fcitx-config-gtk
+sudo apt-get install fcitx-table-all
+sudo apt-get install im-switch
+
+ls
+cd Downloads/
+ls
+sudo dpkg -i 
+  --set as fcitx input methods
+
+--mysql config
+sudo netstat -tap | grep mysql
+sudo apt-get install mysql-server mysql-client
+sudo netstat -tap | grep mysql
+mysql -uroot -p123
+sudo start mysql
+sudo stop mysql
+sudo mysqladmin -u root password newpassword
+  show databases;
+  create database GradeManager;
+  use GradeManager;
+  show tables;
+  create table Worker(
+	Won char(4) Primary Key,
+	Wname char(8) not null,
+	Sex char(2) not null,
+	Brithday Datetime);
+  exit!
+
+--python virtual environment
+sudo apt-get install python3-pip
+pip3 install virtualenv
+virtualenv --version
+
+sudo apt-get install python-virtualenv
+  sudo pip install pysocks --fix the fail of creation virtual environment
+  unset all_proxy
+virtualenv -p /usr/bin/python3.5 m_env_py3
+export M_ENV_PY3=/usr/bin/python2.7 --GLOBAL environment
+source m_env_py3/bin/activate
+deactivate
+
+
+--python pyqt5
+ enter m_env_py3
+ pip3 install pyqt5
+
+--gcc
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt-get update
+sudo apt-get install gcc-6 g++-6
+gcc --version
+gcc-6 example.c
+ --set as default gcc
+	vim ~/.bashrc
+   		alias gcc='/usr/bin/gcc-6'
+		alias g++='/usr/bin/g++-6' 
+	. ~/.bashrc    source ~/.bashrc
+
+--codeblock
+sudo  apt-get install valgrind
+sudo apt-get install libwx*.deb
+sudo apt-get install libwxbase2.8-dbg
+sudo apt-get install libwxbase2.8-dev
+
+sudo apt-get install libwxgtk2.8-dbg
+sudo apt-get install libwxgtk2.8-dev 
+
+sudo apt-get install wx2.8-i18n
+
+sudo apt-get install wx2.8-doc
+sudo apt-get install wx2.8-examples
+
+sudo apt-get install wx-common
+	
+
+
