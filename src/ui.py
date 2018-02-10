@@ -8,8 +8,7 @@ ui core of monpoly
 &2 2018-2-4 Kevin
    organize layout of display
 
-Author: Jan Bodnar
-Website: zetcode.com
+Author: Kevin
 Last edited: August 2017
 """
 
@@ -96,6 +95,9 @@ class UI(QWidget):
         btn = QPushButton(lstPlaceInfo[10].getInfo(), self)
         btn.resize(30,30)
 
+    def createLayout3(self):
+
+
     def createLayoutMap(self, nRow, nCol, nWindowSize):
         [nTotSizeX,nTotSizeY] = nWindowSize
         nStepX = nTotSizeX/nCol
@@ -141,6 +143,8 @@ def createDefPlaceList(nNum):
         #print('new records')
 
     return lstPlaceInfo
+
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
