@@ -2,6 +2,10 @@
 
 Kevin
 Propose; OOP design aft verified
+
+10 Feb, 2018 init oop design
+10 Feb, 2018 ui implementation
+11 Feb, 2018 logic implementation
 """
 
 from collections import namedtuple
@@ -9,16 +13,26 @@ from enum import Enum
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, QSize
+from json import dumps, loads
 
 
 ################Type
+# define game enum
 class RoleType(Enum):
     BANKER = 0
     PLAYER1 = 1
     PLAYER2 = 2
     NON = 3
 
+class GroundType(Enum):
+    GO = 0
+    STREET = 1
+    STATION = 2
+    CHANCE = 3
+    JAIL = 4
+
+#faculty for layout manage
 class CornerType(Enum):
     UL = 0
     UR = 1
@@ -31,13 +45,8 @@ class DirectionType(Enum):
     UP  = 2
     DOWN = 3
 
-class GroundType(Enum):
-    GO = 0
-    STREET = 1
-    STATION = 2
-    CHANCE = 3
-    JAIL = 4
 
+#struct for game info
 Ground = namedtuple('Ground',['name', 'value', 'owner'])
 SpecialGround = namedtuple('SpecialGround', ['name', 'type', 'Bonus', 'value', 'owner' ])
 Role = namedtuple('Role',['name', 'cash', 'property'])
@@ -48,22 +57,21 @@ Rectangle = namedtuple('namedtuple', ['x_ul', 'y_ul', 'x_len', 'y_len'])
 
 
 ################Global Variables
-WinSize = Size._make([800, 480])
-CellSize = Size._make([80, 80])
-PlayerNum = 2
+WinSize = Size._make([800, 480]) #total windows size
+CellSize = Size._make([80, 80]) #cell size
+PlayerNum = 2  #player number
+PlayerPos = [0,0] #player position list
 
 
 
 ###############Class
-# type limit
-
-
-
 class clayout:
     def __init__(self, winsize, cellsize, scheme=0):
         self.win_size = winsize
         self.cell_size = cellsize
         self.create_layout(scheme)
+        self.save_data()
+        self.load_data()
 
     def create_layout(self, scheme):
         win_p_ul = Point._make([0, 0])
@@ -77,9 +85,6 @@ class clayout:
 
         if scheme != 0:
             return layout_lst
-
-        # if self.cell_size.x_len/self.win_size.x_len != 0 or self.cell_size.y_len/self.win_size.y_len != 0:
-        #     return layout_lst
 
         while (1):
             layout_lst.append(Rectangle._make([p.x, p.y, self.cell_size.x_len, self.cell_size.y_len]))
@@ -116,6 +121,19 @@ class clayout:
         i = 0
         for p in self.lay_out:
             print('item ', i, ' pos: ', p.x_ul, p.y_ul)
+
+    def save_data(self):
+        json_str = dumps(self.lay_out)
+        data = loads(json_str)
+        with open('data.json', 'w') as f:
+            dumps(data, f)
+
+    def load_data(self):
+        data = 0
+        with open('data.json', 'r') as f:
+            data = loads(f)
+
+        print(data)
 
 class cinfo:
     def __init__(self):
@@ -169,10 +187,6 @@ class cinfo:
             i = i + 1
 
 
-
-        # for g in self.grd_info:
-        #     print(g.name)
-
     def init_role(self):
         self.player1 = Role._make(['Player1',200, []])
         self.player2 = Role._make(['Player2',200, []])
@@ -205,7 +219,7 @@ class App(QWidget):
         info = cinfo()
         self.layout = info.layout_info
         self.ground_info = info.grd_info
-        #print('size of ground_list', len(self.layout))
+        self.btn_lst = []
         i = 0
         for p in self.layout:
 
@@ -228,21 +242,36 @@ class App(QWidget):
             button.move(x,y)
             button.setFixedHeight(y_size)
             button.setFixedWidth(x_size)
-            if i == 2:
-                button.setIcon(QIcon("red.png"))
-            if i == 5:
-                button.setIcon(QIcon("blue.jpeg"))
 
             button.clicked.connect(self.on_click)
+            self.btn_lst.append(button)
             i = i + 1
+
+        #inital pos of player
+        print(PlayerPos[0], PlayerPos[1])
+        if PlayerPos[0] == PlayerPos[1]:
+            self.btn_lst[PlayerPos[0]].setIcon(QIcon("blue_red.jpeg"))
+            self.btn_lst[PlayerPos[0]].setIconSize(QSize(50,50))
+        else:
+            self.btn_lst[PlayerPos[0]].setIcon(QIcon("red.png"))
+            self.btn_lst[PlayerPos[0]].setIconSize(QSize(50, 50))
+            self.btn_lst[PlayerPos[1]].setIcon(QIcon("blue.jpeg"))
+            self.btn_lst[PlayerPos[1]].setIconSize(QSize(50, 50))
+
 
 
         #create die roll
         self.die_btn = QPushButton('Roll', self)
         self.die_btn.move(200,240)
         self.die_btn.clicked.connect(self.on_die_click)
-        self.die_label = QLabel('Die '+ str(self.roll_die(1)),self)
+        text = 'Dice: {0}'.format(self.roll_die(3))
+        self.die_label = QLabel(text, self)
         self.die_label.move(200,200)
+
+        #create test button
+        self_test_btn = QPushButton('Run', self)
+        self_test_btn.move(400,200)
+
 
         self.show()
         print(self.roll_die(3))
@@ -270,8 +299,37 @@ class App(QWidget):
         return res
 
     def update_roll(self):
-        self.die_label.setWindowTitle("23")
+        text = 'Dice: {0}'.format(self.roll_die(3))
+        self.die_label.setText(text)
         print('roll update')
+
+    def update_view_test(self):
+        pass
+
+# class clogic:
+#     def __init__(self):
+#         pass
+#
+#     def decide_turn(self, prev_player):
+#
+#         next_player = prev_player
+#         if PlayerPos[prev_player] != 17: #jail
+#             next_player = prev_player + 1
+#             return next_player
+#
+#         if prev_player > len(PlayerPos):
+#             next_player = next_player - len(PlayerPos)
+#
+#         return next_player
+#
+#
+#
+#     def move_player(self, cur_player, steps):
+#         PlayerPos[cur_player] = PlayerPos[cur_player] + steps
+#
+#     def buy_and_acution(self, cur_player):
+#         pass
+
 
 
 if __name__ == '__main__':
